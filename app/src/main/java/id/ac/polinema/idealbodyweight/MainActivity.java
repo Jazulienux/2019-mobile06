@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import id.ac.polinema.idealbodyweight.fragments.AboutFragment;
 import id.ac.polinema.idealbodyweight.fragments.BrocaIndexFragment;
 import id.ac.polinema.idealbodyweight.fragments.MenuFragment;
+import id.ac.polinema.idealbodyweight.fragments.ResultFragment;
 import id.ac.polinema.idealbodyweight.util.BrocaIndex;
 
 import android.os.Bundle;
@@ -12,12 +13,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity implements MenuFragment.OnFragmentInteractionListener,
-		BrocaIndexFragment.OnFragmentInteractionListener {
+		BrocaIndexFragment.OnFragmentInteractionListener,
+		ResultFragment.OnFragmentInteractionListener {
 
 	// Deklarasikan atribut Fragment di sini
 	private AboutFragment aboutFragment;
 	private MenuFragment menuFragment;
 	private BrocaIndexFragment brocaIndexFragment;
+	private ResultFragment resultFragment;
+
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.fragment_container,menuFragment).addToBackStack(null).commit();
 		brocaIndexFragment = new BrocaIndexFragment();
+		resultFragment = new ResultFragment();
 
 	}
 
@@ -63,6 +69,15 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
 
 	@Override
 	public void onCalculate(float index) {
+		resultFragment.setInformation(String.format("Your Ideal Height Is %.2f kg", index));
+		getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,resultFragment)
+				.addToBackStack(null).commit();
+	}
 
+	@Override
+	public void onTryAgainButtonClicked(String tag) {
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.fragment_container, brocaIndexFragment)
+				.commit();
 	}
 }
