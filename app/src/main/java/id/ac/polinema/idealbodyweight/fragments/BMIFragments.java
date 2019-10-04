@@ -1,6 +1,7 @@
 package id.ac.polinema.idealbodyweight.fragments;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,29 +10,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import androidx.fragment.app.FragmentTransaction;
-import id.ac.polinema.idealbodyweight.MainActivity;
 import id.ac.polinema.idealbodyweight.R;
-import id.ac.polinema.idealbodyweight.util.BrocaIndex;
+import id.ac.polinema.idealbodyweight.util.BMIIndex;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ResultFragment.OnFragmentInteractionListener} interface
+ * {@link BMIFragments.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ResultFragment extends Fragment {
+public class BMIFragments extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    private String informaton;
-    private String bmi;
 
-    public ResultFragment() {
+    public BMIFragments() {
         // Required empty public constructor
     }
 
@@ -40,37 +35,28 @@ public class ResultFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_result, container, false);
-        final TextView informationText = view.findViewById(R.id.info_txt);
-        final TextView informationText1 = view.findViewById(R.id.info_txt1);
+        View view = inflater.inflate(R.layout.fragment_bmifragments, container, false);
+        final EditText massaText = view.findViewById(R.id.txt_massa);
+        final EditText heightText = view.findViewById(R.id.txt_height);
 
-        String tag = null;
-        Fragment f = null;
-        String [] arr = {"boca","bmi_idx"};
-
-        for (int i = 0 ;i<arr.length;i++){
-            f = getFragmentManager().findFragmentByTag(arr[i].toString());
-            if(f instanceof BMIFragments){
-                tag = f.getTag().toString();
-                informationText1.setText(bmi);
-                informationText.setText(informaton);
-            }
-            else if(f instanceof BrocaIndexFragment){
-                tag = f.getTag().toString();
-                informationText.setText(informaton);
-            }
-        }
-
-        Button tryAg = view.findViewById(R.id.try_again);
-        final String finalTag = tag;
-        tryAg.setOnClickListener(new View.OnClickListener() {
+        Button calc = view.findViewById(R.id.bmi_calculate);
+        calc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mListener != null){
-                    mListener.onTryAgainButtonClicked(finalTag);
+                    if (!heightText.getText().toString().equals("") && !massaText.getText().toString().equals("")){
+                        int heightGet = Integer.parseInt(heightText.getText().toString());
+                        int massaGet = Integer.parseInt(massaText.getText().toString());
+                        BMIIndex bmi = new BMIIndex(massaGet,heightGet);
+                        mListener.onCalculateBMI(bmi.getBmi(),bmi.getCdt());
+                    }
+                    else{
+                    Toast.makeText(getActivity(),"Please select gender and input your height", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
+
         return view;
     }
 
@@ -103,14 +89,7 @@ public class ResultFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onTryAgainButtonClicked(String tag);
-    }
-
-    public  void setInformation (String info){
-        this.informaton = info;
-    }
-    public  void setInformationBMI (String bmi ,String info){
-        this.bmi = bmi;
-        this.informaton = info;
+        // TODO: Update argument type and name
+        void onCalculateBMI(float index, String status);
     }
 }
