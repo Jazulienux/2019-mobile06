@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import id.ac.polinema.idealbodyweight.R;
@@ -41,6 +42,7 @@ public class BrocaIndexFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_broca_index, container, false);
         final RadioGroup genderGroup = view.findViewById(R.id.genderGroup);
         final EditText inputHeight = view.findViewById(R.id.height);
+        final TextView output = view.findViewById(R.id.output);
 
         Button calculate = view.findViewById(R.id.calculate);
         calculate.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +56,7 @@ public class BrocaIndexFragment extends Fragment {
                         int gender = (check == R.id.male) ? BrocaIndex.MALE : BrocaIndex.FEMALE;
                         BrocaIndex brocaIndex = new BrocaIndex(gender,heightCal);
                         mListener.onCalculate(brocaIndex.getIndex());
+                        output.setText("Hasil Perhitungan Adalah : "  + String.valueOf((int) brocaIndex.getIndex()));
                     }
                     else{
                         Toast.makeText(getActivity(), "Please select gender and input your height", Toast.LENGTH_SHORT).show();
